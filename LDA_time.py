@@ -1,32 +1,22 @@
 import jieba
 from gensim import corpora, models
 from gensim.models import CoherenceModel
-from tqdm import tqdm  # 新增
+from tqdm import tqdm
 import matplotlib
 import matplotlib.pyplot as plt
-# import matplotlib.font_manager as fm  # 不再需要
-
-# 导入所需库
 import pandas as pd
 import numpy as np
 from scipy import stats
 
-# 启用tqdm进度条用于pandas apply
-from tqdm import tqdm
-
 tqdm.pandas()
-
-# 加载停用词表
 def load_stopwords(filepath='stopword.txt'):
     with open(filepath, 'r', encoding='utf-8') as f:
         return set([line.strip() for line in f if line.strip()])
-
-# 文本预处理函数，支持外部停用词
 def preprocess_text(text, stopwords=None):
     import re
-    text = re.sub(r"#.*?#", " ", str(text))        # 去除形如#话题#
-    text = re.sub(r"@[\w\-\u4e00-\u9fff]+", " ", text)  # 去除@用户
-    text = re.sub(r"http[s]?://\S+|O网页链接", " ", text)  # 去除URL
+    text = re.sub(r"#.*?#", " ", str(text))      
+    text = re.sub(r"@[\w\-\u4e00-\u9fff]+", " ", text)  
+    text = re.sub(r"http[s]?://\S+|O网页链接", " ", text) 
     text = re.sub(r"[^\w\s\u4e00-\u9fff]", " ", text)
     words = jieba.lcut(text)
     if stopwords is None:
@@ -35,11 +25,9 @@ def preprocess_text(text, stopwords=None):
     return words
 
 def main():
-    # 设置matplotlib中文字体（推荐方式，避免找不到本地字体文件报错）
-    matplotlib.rcParams['font.sans-serif'] = ['SimHei']  # 设置中文字体为黑体
-    matplotlib.rcParams['axes.unicode_minus'] = False    # 正常显示负号
-    # 读取数据（假设 CSV 文件已保存为 df）
-    df = pd.read_csv('combined_annotated.csv')  # 请根据实际文件路径调整
+    matplotlib.rcParams['font.sans-serif'] = ['SimHei']  
+    matplotlib.rcParams['axes.unicode_minus'] = False 
+    df = pd.read_csv('combined_annotated.csv')  
 
     # 1. 加载停用词
     stopwords = load_stopwords('stopword.txt')
